@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>ホーム</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- th:each を使ってカードを繰り返し生成 -->
+        <div th:each="card : ${cards}" class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
+            <img class="w-24 h-24 object-cover rounded-full mb-4" th:src="${card.imageUrl}" alt="Lottery Item">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${card.title}">抽選アイテム</h3>
+            <p class="text-gray-600 mb-4" th:text="${card.description}">
+                サンプルテキストサンプルテキストサンプルテキスト。</p>
+            <a th:href="${card.buttonLink}"
+               class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">
+                詳細を見る
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
