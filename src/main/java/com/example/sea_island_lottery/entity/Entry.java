@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,6 +32,9 @@ public class Entry {
 
     @Column(nullable = false)
     private String status;
+
+    @Column(name = "entry_date", nullable = false)
+    private LocalDate entryDate;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
