@@ -1,0 +1,19 @@
+[33mcommit feef6ead6fe34bf83009817e87f1b9a2371b6247[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/entities[m[33m)[m
+Author: Kotaro <ino.kota0602@gmail.com>
+Date:   Fri Mar 6 17:03:32 2026 +0900
+
+    feat: entity/Event.javaで画像URLカラム書き足し
+
+[1mdiff --git a/src/main/java/com/example/sea_island_lottery/entity/Event.java b/src/main/java/com/example/sea_island_lottery/entity/Event.java[m
+[1mindex e1a92b1..22cb091 100644[m
+[1m--- a/src/main/java/com/example/sea_island_lottery/entity/Event.java[m
+[1m+++ b/src/main/java/com/example/sea_island_lottery/entity/Event.java[m
+[36m@@ -30,7 +30,7 @@[m [mpublic class Event {[m
+     @Column(columnDefinition = "TEXT")[m
+     private String description;[m
+ [m
+[31m-    // 画像URL[m
+[32m+[m[32m    // 画像URLgit commit --amend[m
+     @Column(name = "image_url")[m
+     private String imageUrl;[m
+ [m
