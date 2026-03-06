@@ -30,7 +30,7 @@ public class Entry {
     private Event event;
 
     @Column(nullable = false)
-    private String status; // pending / win / lose (本来はEnum推奨)
+    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
