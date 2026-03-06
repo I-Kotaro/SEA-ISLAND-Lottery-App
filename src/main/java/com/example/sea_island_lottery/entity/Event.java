@@ -30,6 +30,10 @@ public class Event {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    // 画像URL
+    @Column(name = "image_url")
+    private String imageUrl;
+
     //開催日：入力必須
     @Column(name = "event_date", nullable = false)
     private LocalDate eventDate;
