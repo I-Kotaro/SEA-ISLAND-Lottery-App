@@ -50,7 +50,7 @@ public class Event {
     @Column(nullable = false)
     private Integer capacity;
 
-    //上限人数：入力必須
+    //応募締切：入力必須
     @Column(name = "entry_deadline", nullable = false)
     private LocalDateTime entryDeadline;
 
