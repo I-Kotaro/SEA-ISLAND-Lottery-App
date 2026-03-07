@@ -1,5 +1,6 @@
 package com.example.sea_island_lottery.service;
 
+import com.example.sea_island_lottery.dto.EntryDto;
 import com.example.sea_island_lottery.entity.Entry;
 import com.example.sea_island_lottery.entity.Event;
 import com.example.sea_island_lottery.entity.User;
@@ -9,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,7 +27,29 @@ public class EntryService {
         this.entryRepository = entryRepository;
         this.eventRepository = eventRepository;
     }
-    
+
+    //DTO使用パターンで作成が必要なメソッド＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+    // DTOを返すメソッド
+    @Transactional(readOnly = true)
+    public List<EntryDto> findEntryDtosByUserId(User user) {
+        return entryRepository.findByUserId(user.getId()).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    // EntryエンティティをEntryDtoに変換するヘルパーメソッド
+    private EntryDto convertToDto(Entry entry) {
+        EntryDto dto = new EntryDto();
+        dto.setId(entry.getId());
+        dto.setEventId(entry.getEvent().getId());
+        dto.setEventName(entry.getEvent().getName());
+        dto.setEntryDate(entry.getEntryDate());
+        dto.setStatus(entry.getStatus());
+        dto.setCreatedAt(entry.getCreatedAt());
+        return dto;
+    }
+    //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
     public Entry createEntry(User user, Long eventId) {
         // 1. イベントが存在するか確認
         Event event = eventRepository.findById(eventId)
@@ -45,6 +70,7 @@ public class EntryService {
         newEntry.setUser(user);
         newEntry.setEvent(event);
         newEntry.setStatus("pending"); // 初期ステータスは 'pending'
+        newEntry.setEntryDate(LocalDate.now()); // 応募日を設定
 
         return entryRepository.save(newEntry);
     }

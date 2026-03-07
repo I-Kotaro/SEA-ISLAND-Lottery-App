@@ -1,5 +1,6 @@
 package com.example.sea_island_lottery.service;
 
+import com.example.sea_island_lottery.dto.UserDto;
 import com.example.sea_island_lottery.entity.User;
 import com.example.sea_island_lottery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,22 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    //DTO使用パターンで作成が必要なメソッド＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+    // DTOを返すメソッド
+    @Transactional(readOnly = true)
+    public Optional<UserDto> findUserDtoById(UUID id) {
+        return userRepository.findById(id).map(this::convertToDto);
+    }
+
+    // UserエンティティをUserDtoに変換するヘルパーメソッド
+    private UserDto convertToDto(User user) {
+        UserDto dto = new UserDto();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        return dto;
+    }
+    //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
     //DBから1件ユーザーを取得するメソッド
     //DB操作がトランザクション内(処理成功時だけDBに反映される)で実行されるアノテーション

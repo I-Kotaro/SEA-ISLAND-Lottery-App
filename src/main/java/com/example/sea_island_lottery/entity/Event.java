@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -34,6 +33,14 @@ public class Event {
     @Column(name = "image_url")
     private String imageUrl;
 
+    //開始時間：入力必須
+    @Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
+
+    //終了時間：入力必須
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
+
     //定員：入力必須
     @Column(nullable = false)
     private Integer capacity;
@@ -41,6 +48,10 @@ public class Event {
     //応募締切：入力必須
     @Column(name = "entry_deadline", nullable = false)
     private LocalDateTime entryDeadline;
+
+    //ステータス：入力必須
+    @Column(nullable = false)
+    private String status; // open / closed / finished (本来はEnum推奨)
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
