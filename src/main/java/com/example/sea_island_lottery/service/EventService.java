@@ -1,5 +1,6 @@
 package com.example.sea_island_lottery.service;
 
+import com.example.sea_island_lottery.dto.EventListDto;
 import com.example.sea_island_lottery.entity.Event;
 import com.example.sea_island_lottery.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -19,6 +21,24 @@ public class EventService {
     @Autowired
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
+    }
+
+    // DTOを返す新しいメソッド
+    @Transactional(readOnly = true)
+    public List<EventListDto> findAllEventsForList() {
+        List<Event> events = eventRepository.findAll();
+        return events.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    // EventエンティティをEventListDtoに変換するヘルパーメソッド
+    private EventListDto convertToDto(Event event) {
+        EventListDto dto = new EventListDto();
+        dto.setId(event.getId());
+        dto.setName(event.getName());
+        dto.setImageUrl(event.getImageUrl());
+        return dto;
     }
 
     //イベントを全件取得するメソッド
@@ -51,7 +71,6 @@ public class EventService {
         event.setImageUrl(eventDetails.getImageUrl());
         event.setCapacity(eventDetails.getCapacity());
         event.setEntryDeadline(eventDetails.getEntryDeadline());
-
         return eventRepository.save(event);
     }
 

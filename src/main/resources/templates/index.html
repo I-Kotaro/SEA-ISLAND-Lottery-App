@@ -10,12 +10,11 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <!-- th:each を使ってカードを繰り返し生成 -->
-        <div th:each="card : ${cards}" class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
-            <img class="w-24 h-24 object-cover rounded-full mb-4" th:src="${card.imageUrl}" alt="Lottery Item">
-            <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${card.title}">抽選アイテム</h3>
-            <p class="text-gray-600 mb-4" th:text="${card.description}">
-                サンプルテキストサンプルテキストサンプルテキスト。</p>
-            <a th:href="${card.buttonLink}"
+        <div th:each="event : ${events}" class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
+            <img class="w-24 h-24 object-cover rounded-full mb-4" th:src="${event.imageUrl}" alt="Lottery Item">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${event.name}">抽選アイテム</h3>
+            <p class="text-gray-600 mb-4" th:text="${event.eventDate}">開催日</p>
+            <a th:href="@{/events/{id}(id=${event.id})}"
                class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">
                 詳細を見る
             </a>
