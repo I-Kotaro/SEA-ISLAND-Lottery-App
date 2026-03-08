@@ -6,7 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Sea Island Lottery</title>
     <link href="/css/output.css" rel="stylesheet">
+    <!-- googleフォント -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
     <!-- 追加のCSSやスクリプトがあればここに書く -->
+    <style>
+        body {
+            font-family: "Noto Sans JP", sans-serif;
+        }
+    </style>
 </head>
 <body class="flex flex-col min-h-screen bg-gray-100">
 
@@ -17,9 +26,9 @@
                  class="h-12 w-auto">
         </a>
         <nav>
-            <a href="/" class="text-blue-500 hover:text-blue-300 mx-2">ホーム</a>
-            <a href="/about" class="text-blue-500 hover:text-blue-300 mx-2">アバウト</a>
-            <a href="/contact" class="text-blue-500 hover:text-blue-300 mx-2">お問い合わせ</a>
+            <a href="/" class="text-lg font-bold text-blue-500 hover:text-blue-300 mx-2">ホーム</a>
+            <a href="/about" class="text-lg font-bold text-blue-500 hover:text-blue-300 mx-2">アバウト</a>
+            <a href="/contact" class="text-lg font-bold text-blue-500 hover:text-blue-300 mx-2">お問い合わせ</a>
         </nav>
     </div>
 </header>

@@ -55,7 +55,6 @@ public class UserService {
     public User updateUser(UUID id, User userDetails) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
         user.setName(userDetails.getName());
         // 他に更新可能なプロフィール情報があれば書く
 

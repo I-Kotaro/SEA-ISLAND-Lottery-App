@@ -38,6 +38,9 @@ public class EventService {
         dto.setId(event.getId());
         dto.setName(event.getName());
         dto.setImageUrl(event.getImageUrl());
+        dto.setStartTime(event.getStartTime());
+        dto.setEndTime(event.getEndTime());
+        dto.setStatus(event.getStatus());
         return dto;
     }
 

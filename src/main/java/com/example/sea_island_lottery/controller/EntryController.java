@@ -34,7 +34,6 @@ public class EntryController {
             // ユーザーを取得
             User user = userService.findUserById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
-
             // 応募処理を実行
             entryService.createEntry(user, eventId);
 
