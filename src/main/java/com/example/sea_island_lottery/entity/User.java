@@ -74,8 +74,7 @@ public class User {
 //    @Column(name = "updated_at") // カラム名を明示
 //    private LocalDateTime updatedAt;
 //
-//    // -------------------------------
-//    // コンストラクタ(オブジェクト化(new)する準備)
+//    // コンストラクタ(オブジェクト化(new)する準備)------------------------------
 //    //※DI（Dependency Injection）はオブジェクト化 + 参照の注入をSpringが自動実施する仕組みで
 //    //指示はController,Serviceで書く、Repository,Entityでは書かない
 //    public User() {}
@@ -87,8 +86,17 @@ public class User {
 //        this.updatedAt = updatedAt;
 //    }
 //
-//    // -------------------------------
-//    // getter / setter
+//    // getter / setter----------------------------------------------------
+//    //CRUD(DB操作)とは関係なく、オブジェクト内に対して値を読み書きを指定
+//    //基本的には 各カラム（フィールド）には getter と setter がセットで用意されることが多い
+//    //DBに保存するフィールドは基本的に getter を持つ
+//    //書き換えが必要なフィールドだけ setter を持つ
+//    //ID や自動生成カラムは setter を作らない（不変にする）
+//
+//    ・setter => DBに保存したい値を入れるときに必要
+//    ・getter => オブジェクトの値を確認したいときに必要
+//    ・JPA では CRUD の際に 内部で getter が呼ばれることが多い
+//
 //    public UUID getId() {
 //      return id;  //getは取得だけなのでreturnでよい
 //    }
@@ -114,8 +122,7 @@ public class User {
 //      this.updatedAt = updatedAt;
 //    }
 //
-//    // -------------------------------
-//    // タイムスタンプを自動設定するためのコールバックメソッド
+//    // タイムスタンプを自動設定するためのコールバックメソッド------------------------
 //    @PrePersist
 //    protected void onCreate() {
 //        this.createdAt = LocalDateTime.now();
