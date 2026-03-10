@@ -30,7 +30,7 @@ public class EntryService {
     //DTO使用パターンで作成が必要なメソッド＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
     // DTOを返すメソッド
     @Transactional(readOnly = true)
-    public List<EntryDto> findEntryDtosByUserId(User user) {
+    public List<EntryDto> findEntryDtoByUserId(User user) {
         return entryRepository.findByUserId(user.getId()).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());

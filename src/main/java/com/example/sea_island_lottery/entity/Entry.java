@@ -1,5 +1,7 @@
 package com.example.sea_island_lottery.entity;
 
+//jakartaでJPA使える
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,11 +25,13 @@ public class Entry {
     private Long id;
 
     //どのユーザーが応募したかを記録
+    //@ManyToOne => リレーションができるJPAアノテーション
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     //どのイベントに応募してるか記録
+    //@ManyToOne => リレーションができるJPAアノテーション
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;

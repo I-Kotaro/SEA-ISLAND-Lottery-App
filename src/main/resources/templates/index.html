@@ -17,6 +17,12 @@
             <p class="text-gray-600 mb-4">
                 <span th:text="${event.startTime}">開始時間</span> - <span th:text="${event.endTime}">終了時間</span>
             </p>
+            <p class="text-gray-600 mb-2">
+                待ち組数: <span th:text="${event.queueNumber}">0</span>組
+            </p>
+            <p class="text-gray-600 mb-4">
+                待ち時間: <span th:text="${event.waitTime}">0</span>分
+            </p>
             <a th:href="@{/events/{id}(id=${event.id})}"
                class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">
                 詳細を見る

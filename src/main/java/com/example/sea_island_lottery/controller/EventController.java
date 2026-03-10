@@ -1,6 +1,6 @@
 package com.example.sea_island_lottery.controller;
 
-import com.example.sea_island_lottery.dto.EventListDto;
+import com.example.sea_island_lottery.dto.EventDto;
 import com.example.sea_island_lottery.entity.Event;
 import com.example.sea_island_lottery.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class EventController {
     //イベント一覧表示はDTOで取得パターン
     @GetMapping("/")
     public String index(Model model) {
-        List<EventListDto> events = eventService.findAllEventsForList();
+        List<EventDto> events = eventService.findAllEventsForList();
         //model.addAttribute => Controller から View にデータを渡すためのメソッド
         model.addAttribute("events", events);
         return "index"; // src/main/resources/templates/index.html を表示
@@ -41,10 +41,10 @@ public class EventController {
     //イベント詳細表示はエンティティで取得パターン
     @GetMapping("/events/{id}")
     public String eventDetail(@PathVariable Long id, Model model) {
-        // 詳細表示ではエンティティを直接取得してOK
         Event event = eventService.findEventById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
-        model.addAttribute("event", event);
+        EventDto eventDto = eventService.convertToDto(event);
+        model.addAttribute("event", eventDto); //addAttribute => controllerからviewにデータを渡すメソッド
         return "event/detail"; // src/main/resources/templates/event/detail.html を表示
     }
 }
