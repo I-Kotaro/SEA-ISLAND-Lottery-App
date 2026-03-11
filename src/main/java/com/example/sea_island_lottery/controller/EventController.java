@@ -1,7 +1,9 @@
 package com.example.sea_island_lottery.controller;
 
 import com.example.sea_island_lottery.dto.EventDto;
+import com.example.sea_island_lottery.entity.Entry;
 import com.example.sea_island_lottery.entity.Event;
+import com.example.sea_island_lottery.repository.EntryRepository;
 import com.example.sea_island_lottery.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,41 +12,48 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class EventController {
 
     private final EventService eventService;
+    private final EntryRepository entryRepository;
 
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, EntryRepository entryRepository) {
         this.eventService = eventService;
+        this.entryRepository = entryRepository;
     }
 
     // トップページ（イベント一覧）
-    //イベント一覧表示はDTOで取得パターン
     @GetMapping("/")
     public String index(Model model) {
         List<EventDto> events = eventService.findAllEventsForList();
-        //model.addAttribute => Controller から View にデータを渡すためのメソッド
         model.addAttribute("events", events);
-        return "index"; // src/main/resources/templates/index.html を表示
+        return "index";
     }
 
-    // イベント一覧（/events でもアクセス可能にする場合）
+    // イベント一覧
     @GetMapping("/events")
     public String listEvents(Model model) {
-        return index(model); // indexメソッドを再利用
+        return index(model);
     }
 
     // イベント詳細表示
-    //イベント詳細表示はエンティティで取得パターン
     @GetMapping("/events/{id}")
     public String eventDetail(@PathVariable Long id, Model model) {
         Event event = eventService.findEventById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
         EventDto eventDto = eventService.convertToDto(event);
-        model.addAttribute("event", eventDto); //addAttribute => controllerからviewにデータを渡すメソッド
-        return "event/detail"; // src/main/resources/templates/event/detail.html を表示
+        model.addAttribute("event", eventDto);
+
+        // 現在のユーザーの応募情報を取得（テスト用ユーザーIDを使用）
+        UUID currentUserId = UUID.fromString("00000000-0000-0000-0000-000000000001");
+        Optional<Entry> userEntry = entryRepository.findByUserIdAndEventId(currentUserId, id);
+        userEntry.ifPresent(entry -> model.addAttribute("userEntry", entry));
+
+        return "event/detail";
     }
 }

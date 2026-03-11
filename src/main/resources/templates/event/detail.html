@@ -60,8 +60,18 @@
 
                 <!-- アクションボタン (中央配置) -->
                 <div class="flex flex-col items-center gap-4">
-                    <!-- 応募ボタン -->
-                    <form th:if="${event.status == 'open'}" method="post" th:action="@{/entries/create}"
+                    <!-- 現地到着ボタン -->
+                    <form th:if="${userEntry != null and userEntry.status == 'WAITING'}"
+                          th:action="@{/entries/{id}/arrive(id=${userEntry.id})}" method="post" class="w-full max-w-md">
+                        <input type="hidden" name="eventId" th:value="${event.id}">
+                        <button type="submit"
+                                class="w-full bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-300 font-bold text-lg">
+                            現地に到着しました
+                        </button>
+                    </form>
+
+                    <!-- 応募ボタン (まだ応募していない場合に表示) -->
+                    <form th:if="${userEntry == null and event.status == 'open'}" method="post" th:action="@{/entries/create}"
                           class="w-full max-w-md">
                         <input type="hidden" name="eventId" th:value="${event.id}">
                         <input type="hidden" name="userId" value="00000000-0000-0000-0000-000000000001">

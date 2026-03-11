@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -21,5 +22,8 @@ public interface EntryRepository extends JpaRepository<Entry, Long> {
 
     // ステータスと作成日時で応募を検索
     List<Entry> findByStatusAndCreatedAtBefore(String status, LocalDateTime createdAt);
+
+    // ユーザーIDとイベントIDで応募を検索
+    Optional<Entry> findByUserIdAndEventId(UUID userId, Long eventId);
 
 }
