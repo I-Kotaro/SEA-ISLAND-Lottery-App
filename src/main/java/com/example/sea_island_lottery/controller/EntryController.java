@@ -1,46 +1,54 @@
 package com.example.sea_island_lottery.controller;
 
+import com.example.sea_island_lottery.entity.Entry;
+import com.example.sea_island_lottery.entity.Event;
 import com.example.sea_island_lottery.entity.User;
-import com.example.sea_island_lottery.service.EntryService;
-import com.example.sea_island_lottery.service.UserService;
+import com.example.sea_island_lottery.repository.EntryRepository;
+import com.example.sea_island_lottery.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/entries")
 public class EntryController {
 
-    private final EntryService entryService;
-    private final UserService userService;
+    private final EventService eventService;
+    private final EntryRepository entryRepository;
 
     @Autowired
-    public EntryController(EntryService entryService, UserService userService) {
-        this.entryService = entryService;
-        this.userService = userService;
+    public EntryController(EventService eventService, EntryRepository entryRepository) {
+        this.eventService = eventService;
+        this.entryRepository = entryRepository;
     }
 
-    // イベントへの応募処理
-    @PostMapping("/create")
-    public String createEntry(@RequestParam("eventId") Long eventId,
-                              @RequestParam("userId") UUID userId, // 本来はセッションから取得
-                              Model model) {
-        try {
-            // ユーザーを取得
-            User user = userService.findUserById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            // 応募処理を実行
-            entryService.createEntry(user, eventId);
+    @PostMapping("/entries/create")
+    public String createEntry(@RequestParam Long eventId, @RequestParam UUID userId) {
+        // 擬似的なリポジトリやサービスを介してエンティティを取得
+        User user = new User();
+        user.setId(userId);
 
-            return "redirect:/events/" + eventId + "?success"; // 成功したらイベント詳細ページへリダイレクト
-        } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
-            return "error"; // エラーページへ（簡易的）
+        Event event = new Event();
+        event.setId(eventId);
+
+        // 既存の応募がないか確認
+        if (entryRepository.findByUserIdAndEventId(userId, eventId).isEmpty()) {
+            Entry entry = new Entry();
+            entry.setUser(user);
+            entry.setEvent(event);
+            entry.setStatus("WAITING");
+            entryRepository.save(entry);
         }
+
+        return "redirect:/events/" + eventId;
+    }
+
+    @PostMapping("/entries/{id}/arrive")
+    public String arrive(@PathVariable Long id, @RequestParam Long eventId) {
+        eventService.updateEntryStatus(id, "NOT_ENTERED");
+        return "redirect:/events/" + eventId;
     }
 }
