@@ -78,6 +78,14 @@ public class EventService {
         return eventRepository.findById(id);
     }
 
+    // 応募ステータスを更新するメソッド
+    public void updateEntryStatus(Long entryId, String status) {
+        Entry entry = entryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("Entry not found with id: " + entryId));
+        entry.setStatus(status);
+        entryRepository.save(entry);
+    }
+
     // 3時間以上 "WAITING" ステータスの応募をリセットするスケジュールされたタスク
     @Scheduled(fixedRate = 3600000) // 1時間ごとに実行
     public void resetOldWaitingEntries() {
