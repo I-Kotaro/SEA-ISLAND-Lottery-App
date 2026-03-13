@@ -14,14 +14,12 @@
              class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
             <img class="w-24 h-24 object-cover rounded-full mb-4" th:src="${event.imageUrl}" alt="Lottery Item">
             <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${event.name}">イベント</h3>
-            <p class="text-gray-600 mb-4">
-                <span th:text="${event.startTime}">開始時間</span> - <span th:text="${event.endTime}">終了時間</span>
-            </p>
+            
             <p class="text-gray-600 mb-2">
                 待ち組数: <span th:text="${event.queueNumber}">0</span>組
             </p>
             <p class="text-gray-600 mb-4">
-                待ち時間: <span th:text="${event.waitTime}">0</span>分
+                待ち時間: 約<span th:text="${event.waitTime}">0</span>分
             </p>
             <a th:href="@{/events/{id}(id=${event.id})}"
                class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +44,9 @@ public class EventController {
 
     // イベント詳細表示
     @GetMapping("/events/{id}")
-    public String eventDetail(@PathVariable Long id, Model model) {
+    public String eventDetail(@PathVariable Long id, 
+                              @RequestParam(required = false) Boolean completed,
+                              Model model) {
         Event event = eventService.findEventById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
         EventDto eventDto = eventService.convertToDto(event);
@@ -53,6 +56,11 @@ public class EventController {
         UUID currentUserId = UUID.fromString("00000000-0000-0000-0000-000000000001");
         Optional<Entry> userEntry = entryRepository.findByUserIdAndEventId(currentUserId, id);
         userEntry.ifPresent(entry -> model.addAttribute("userEntry", entry));
+
+        // 応募完了フラグがあればモデルに追加
+        if (Boolean.TRUE.equals(completed)) {
+            model.addAttribute("showCompletionModal", true);
+        }
 
         return "event/detail";
     }

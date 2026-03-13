@@ -6,11 +6,10 @@
     <title th:text="${event.name}">イベント詳細</title>
 </head>
 <body>
+
 <div layout:fragment="content" class="py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div class="bg-green rounded-3xl shadow-xl overflow-hidden">
-
             <!-- 画像エリア (中央配置、少し小さく、角丸) -->
             <div class="pt-9 pb-4 px-8 flex justify-center">
                 <img class="w-full max-w-2xl h-64 sm:h-80 object-cover rounded-2xl shadow-md"
@@ -45,7 +44,7 @@
                     <div class="text-center">
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">現在の待ち時間</p>
                         <p class="text-4xl font-bold text-gray-800">
-                            <span th:text="${event.waitTime}">0</span>分
+                            約<span th:text="${event.waitTime}">0</span>分
                         </p>
                     </div>
                 </div>
@@ -60,21 +59,34 @@
 
                 <!-- アクションボタン (中央配置) -->
                 <div class="flex flex-col items-center gap-4">
-                    <!-- 現地到着ボタン -->
-                    <form th:if="${userEntry != null and userEntry.status == 'WAITING'}"
-                          th:action="@{/entries/{id}/arrive(id=${userEntry.id})}" method="post" class="w-full max-w-md">
-                        <input type="hidden" name="eventId" th:value="${event.id}">
-                        <button type="submit"
-                                class="w-full bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-300 font-bold text-lg">
-                            現地に到着しました
-                        </button>
-                    </form>
+                    <!-- 応募中(WAITING)の場合に表示されるエリア -->
+                    <div th:if="${userEntry != null and userEntry.status == 'WAITING'}"
+                         class="w-full max-w-md space-y-4">
+                        <!-- 現地到着ボタン -->
+                        <form th:action="@{/entries/{id}/arrive(id=${userEntry.id})}" method="post">
+                            <input type="hidden" name="eventId" th:value="${event.id}">
+                            <button type="submit"
+                                    class="w-full bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-300 font-bold text-lg">
+                                現地に到着しました
+                            </button>
+                        </form>
 
-                    <!-- 応募ボタン (まだ応募していない場合に表示) -->
-                    <form th:if="${userEntry == null and event.status == 'open'}" method="post" th:action="@{/entries/create}"
-                          class="w-full max-w-md">
+                        <!-- キャンセルボタン -->
+                        <form th:action="@{/entries/{id}/cancel(id=${userEntry.id})}" method="post">
+                            <input type="hidden" name="eventId" th:value="${event.id}">
+                            <button type="submit"
+                                    class="w-full bg-red-100 text-red-600 border border-red-200 px-8 py-3 rounded-full hover:bg-red-200 transition duration-300 font-medium text-base">
+                                応募をキャンセルする
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- 応募ボタン (まだ応募していない、またはWAITINGでない場合に表示) -->
+                    <form th:if="${userEntry == null or userEntry.status != 'WAITING'}"
+                          th:unless="${event.status != 'open'}"
+                          method="post" th:action="@{/entries/create}">
                         <input type="hidden" name="eventId" th:value="${event.id}">
-                        <input type="hidden" name="userId" value="00000000-0000-0000-0000-000000000001">
+                        <!-- コントローラ側で固定ユーザーを使う -->
                         <button type="submit"
                                 class="w-full bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 hover:shadow-lg focus:ring-4 focus:ring-blue-200 transition duration-300 font-bold text-lg flex justify-center items-center group transform hover:-translate-y-0.5">
                             <span>このイベントに応募する</span>
@@ -86,7 +98,9 @@
                         </button>
                     </form>
 
-                    <button th:unless="${event.status == 'open'}" disabled
+                    <!-- 受付終了時の表示 -->
+                    <button th:if="${event.status != 'open' and (userEntry == null or userEntry.status != 'WAITING')}"
+                            disabled
                             class="w-full max-w-md bg-gray-100 text-gray-400 border border-gray-200 px-8 py-4 rounded-full cursor-not-allowed font-bold text-lg text-center shadow-inner">
                         応募は締め切られました
                     </button>
@@ -97,9 +111,84 @@
                     </a>
                 </div>
 
+                <!--------------- 応募完了モーダル----------------->
+                <div id="completion-modal"
+                     class="fixed inset-0 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+                    <!-- 背景オーバーレイ -->
+                    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal()"></div>
+
+                    <!-- モーダルコンテンツ -->
+                    <div class="bg-white rounded-lg shadow-2xl p-8 max-w-sm w-full mx-4 relative transform scale-95 transition-transform duration-300">
+                        <div class="text-center">
+                            <!-- チェックマークアイコン -->
+                            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                                <svg class="h-10 w-10 text-green-600" fill="none" stroke="currentColor"
+                                     viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">応募が完了しました！</h3>
+                            <p class="text-gray-500 mb-8">受付でマイページを<br>職員にご提示ください。
+                            </p>
+
+                            <div class="flex flex-col gap-3">
+                                <a href="/mypage"
+                                   class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-700 transition duration-200">
+                                    マイページへ
+                                </a>
+                                <button onclick="closeModal()"
+                                        class="w-full bg-gray-200 text-gray-800 px-4 py-3 rounded-lg font-bold hover:bg-gray-300 transition duration-200">
+                                    閉じる
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+</div>
+
+<div layout:fragment="scripts">
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            /*[[${showCompletionModal}]]*/
+            const showModal = [[${showCompletionModal}]] || false;
+
+            if (showModal) {
+                openModal();
+            }
+        });
+
+        function openModal() {
+            const modal = document.getElementById('completion-modal');
+            if (modal) {
+                const modalContent = modal.querySelector('div.bg-white');
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modalContent.classList.remove('scale-95');
+                    modalContent.classList.add('scale-100');
+                }, 10);
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('completion-modal');
+            if (modal) {
+                const modalContent = modal.querySelector('div.bg-white');
+                modal.classList.add('opacity-0');
+                modalContent.classList.remove('scale-100');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        }
+    </script>
 </div>
 </body>
 </html>
