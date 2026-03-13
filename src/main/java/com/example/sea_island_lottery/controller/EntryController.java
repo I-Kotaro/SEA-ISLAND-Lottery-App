@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -19,6 +20,9 @@ public class EntryController {
     private final EventService eventService;
     private final EntryRepository entryRepository;
 
+    // テスト用の固定ユーザーID
+    private final UUID TEST_USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+
     @Autowired
     public EntryController(EventService eventService, EntryRepository entryRepository) {
         this.eventService = eventService;
@@ -26,16 +30,23 @@ public class EntryController {
     }
 
     @PostMapping("/entries/create")
-    public String createEntry(@RequestParam Long eventId, @RequestParam UUID userId) {
-        // 擬似的なリポジトリやサービスを介してエンティティを取得
-        User user = new User();
-        user.setId(userId);
+    public String createEntry(@RequestParam Long eventId) {
+        // 固定のテストユーザーを使用
+        Optional<Entry> existingEntry = entryRepository.findByUserIdAndEventId(TEST_USER_ID, eventId);
 
-        Event event = new Event();
-        event.setId(eventId);
+        if (existingEntry.isPresent()) {
+            Entry entry = existingEntry.get();
+            if (!"WAITING".equals(entry.getStatus())) {
+                entry.setStatus("WAITING");
+                entryRepository.save(entry);
+            }
+        } else {
+            User user = new User();
+            user.setId(TEST_USER_ID);
 
-        // 既存の応募がないか確認
-        if (entryRepository.findByUserIdAndEventId(userId, eventId).isEmpty()) {
+            Event event = new Event();
+            event.setId(eventId);
+
             Entry entry = new Entry();
             entry.setUser(user);
             entry.setEvent(event);
@@ -43,11 +54,18 @@ public class EntryController {
             entryRepository.save(entry);
         }
 
-        return "redirect:/events/" + eventId;
+        // 完了パラメータを付けてリダイレクト
+        return "redirect:/events/" + eventId + "?completed=true";
     }
 
     @PostMapping("/entries/{id}/arrive")
     public String arrive(@PathVariable Long id, @RequestParam Long eventId) {
+        eventService.updateEntryStatus(id, "NOT_ENTERED");
+        return "redirect:/events/" + eventId;
+    }
+
+    @PostMapping("/entries/{id}/cancel")
+    public String cancel(@PathVariable Long id, @RequestParam Long eventId) {
         eventService.updateEntryStatus(id, "NOT_ENTERED");
         return "redirect:/events/" + eventId;
     }
