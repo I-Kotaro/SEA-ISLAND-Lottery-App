@@ -12,48 +12,51 @@
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden p-8">
 
             <div class="text-center mb-8">
-                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-700 leading-tight tracking-tight">
                     チケット情報
                 </h1>
             </div>
 
             <div class="space-y-6">
                 <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">ユーザー名</p>
-                    <p class="text-xl font-bold text-gray-800"><span th:text="${userName}">山田 太郎</span>　様</p>
+                    <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">お名前</p>
+                    <p class="text-xl font-bold text-gray-700"><span th:text="${userName}">山田 太郎</span>　様</p>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">応募中チケット</p>
-                    <p class="text-xl font-bold text-gray-800" th:text="${eventName}">イベント名</p>
+                    <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">応募中イベント</p>
+                    <p class="text-xl font-bold text-gray-700" th:text="${eventName}">イベント名</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-y border-gray-100 py-6">
                     <div class="text-center">
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">待機組数</p>
-                        <p class="text-4xl font-bold text-gray-800">
+                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">待機組数</p>
+                        <p class="text-4xl font-bold text-gray-700">
                             <span th:text="${queueNumber}">0</span>組
                         </p>
                     </div>
                     <div class="text-center">
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">待機時間</p>
-                        <p class="text-4xl font-bold text-gray-800">
+                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">待機時間</p>
+                        <p class="text-4xl font-bold text-gray-700">
                             約<span th:text="${waitTime}">0</span>分
                         </p>
                     </div>
                 </div>
             </div>
 
+            <div class="mt-8 text-center font-bold text-gray-700">お時間になりましたら受付までお越しください</div>
+
             <div class="mt-8 flex flex-col items-center gap-4">
                 <form th:action="@{/entries/{id}/arrive(id=${entryId})}" method="post">
                     <button type="submit"
                             class="w-full bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-300 font-bold text-lg">
-                        現地に到着しました
+                        受付完了
                     </button>
                 </form>
 
-                <form th:action="@{/entries/{id}/cancel(id=${entryId})}" method="post">
+                <form th:action="@{/entries/{id}/cancel(id=${entryId})}" method="post"
+                      onsubmit="return confirm('本当にキャンセルしますか？');">
                     <button type="submit"
-                            class="w-full bg-red-100 text-red-600 border border-red-200 px-8 py-3 rounded-full hover:bg-red-200 transition duration-300 font-medium text-base">
+                            class="text-gray-400 hover:text-gray-800 font-medium transition duration-300 border-b border-transparent hover:border-gray-800 pb-0.5">
                         キャンセルする
                     </button>
                 </form>
