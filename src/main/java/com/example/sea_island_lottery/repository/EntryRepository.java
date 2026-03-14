@@ -27,4 +27,7 @@ public interface EntryRepository extends JpaRepository<Entry, Long> {
     Optional<Entry> findByUserIdAndEventId(UUID userId, Long eventId);
 
     List<Entry> findByUserIdAndStatus(UUID userId, String status);
+
+    // ユーザーIDとステータスで応募が存在するかチェック
+    boolean existsByUserIdAndStatus(UUID userId, String status);
 }

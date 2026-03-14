@@ -65,6 +65,25 @@ public class EventService {
         return dto;
     }
 
+    public int getQueueNumber(long eventId) {
+        return (int) entryRepository.countByEventIdAndStatus(eventId, "WAITING");
+    }
+
+    public int getWaitTime(long eventId) {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        if (eventOptional.isEmpty()) {
+            return 0;
+        }
+        Event event = eventOptional.get();
+        Integer avgTimePerQueue = event.getAvgTimePerQueue();
+        if (avgTimePerQueue != null && avgTimePerQueue > 0) {
+            long queueNumber = getQueueNumber(eventId);
+            return (int) queueNumber * avgTimePerQueue;
+        } else {
+            return 0;
+        }
+    }
+
     //イベントを全件取得するメソッド
     //DB操作がトランザクション内(処理成功時だけDBに反映される)で実行されるアноテーション
     @Transactional(readOnly = true)

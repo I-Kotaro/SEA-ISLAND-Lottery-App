@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>チケット情報</title>
+</head>
+<body>
+
+<div layout:fragment="content" class="pt-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden p-8">
+
+            <div class="text-center mb-8">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight">
+                    チケット情報
+                </h1>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">ユーザー名</p>
+                    <p class="text-xl font-bold text-gray-800"><span th:text="${userName}">山田 太郎</span>　様</p>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">応募中チケット</p>
+                    <p class="text-xl font-bold text-gray-800" th:text="${eventName}">イベント名</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-y border-gray-100 py-6">
+                    <div class="text-center">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">待機組数</p>
+                        <p class="text-4xl font-bold text-gray-800">
+                            <span th:text="${queueNumber}">0</span>組
+                        </p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">待機時間</p>
+                        <p class="text-4xl font-bold text-gray-800">
+                            約<span th:text="${waitTime}">0</span>分
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex flex-col items-center gap-4">
+                <form th:action="@{/entries/{id}/arrive(id=${entryId})}" method="post">
+                    <button type="submit"
+                            class="w-full bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-300 font-bold text-lg">
+                        現地に到着しました
+                    </button>
+                </form>
+
+                <form th:action="@{/entries/{id}/cancel(id=${entryId})}" method="post">
+                    <button type="submit"
+                            class="w-full bg-red-100 text-red-600 border border-red-200 px-8 py-3 rounded-full hover:bg-red-200 transition duration-300 font-medium text-base">
+                        キャンセルする
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

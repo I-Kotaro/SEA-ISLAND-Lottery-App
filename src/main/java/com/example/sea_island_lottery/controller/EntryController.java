@@ -30,15 +30,16 @@ public class EntryController {
     }
 
     @PostMapping("/entries/create")
-    public String createEntry(@RequestParam Long eventId) {
+    public String createEntry(@RequestParam("eventId") Long eventId) {
         // 固定のテストユーザーを使用
         Optional<Entry> existingEntry = entryRepository.findByUserIdAndEventId(TEST_USER_ID, eventId);
 
+        Entry entry;
         if (existingEntry.isPresent()) {
-            Entry entry = existingEntry.get();
+            entry = existingEntry.get();
             if (!"WAITING".equals(entry.getStatus())) {
                 entry.setStatus("WAITING");
-                entryRepository.save(entry);
+                entry = entryRepository.save(entry);
             }
         } else {
             User user = new User();
@@ -47,26 +48,36 @@ public class EntryController {
             Event event = new Event();
             event.setId(eventId);
 
-            Entry entry = new Entry();
+            entry = new Entry();
             entry.setUser(user);
             entry.setEvent(event);
             entry.setStatus("WAITING");
-            entryRepository.save(entry);
+            entry = entryRepository.save(entry);
         }
 
-        // 完了パラメータを付けてリダイレクト
+        // 完了パラメータを付けてイベント詳細へリダイレクト
         return "redirect:/events/" + eventId + "?completed=true";
     }
 
     @PostMapping("/entries/{id}/arrive")
-    public String arrive(@PathVariable Long id, @RequestParam Long eventId) {
+    public String arrive(@PathVariable("id") Long id) {
+        Optional<Entry> entryOptional = entryRepository.findById(id);
+        if (entryOptional.isEmpty()) {
+            return "redirect:/";
+        }
+        Entry entry = entryOptional.get();
         eventService.updateEntryStatus(id, "NOT_ENTERED");
-        return "redirect:/events/" + eventId;
+        return "redirect:/events/" + entry.getEvent().getId();
     }
 
     @PostMapping("/entries/{id}/cancel")
-    public String cancel(@PathVariable Long id, @RequestParam Long eventId) {
+    public String cancel(@PathVariable("id") Long id) {
+        Optional<Entry> entryOptional = entryRepository.findById(id);
+        if (entryOptional.isEmpty()) {
+            return "redirect:/";
+        }
+        Entry entry = entryOptional.get();
         eventService.updateEntryStatus(id, "NOT_ENTERED");
-        return "redirect:/events/" + eventId;
+        return "redirect:/events/" + entry.getEvent().getId();
     }
 }

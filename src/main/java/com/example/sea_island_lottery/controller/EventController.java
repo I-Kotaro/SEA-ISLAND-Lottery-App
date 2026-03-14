@@ -44,8 +44,9 @@ public class EventController {
 
     // イベント詳細表示
     @GetMapping("/events/{id}")
-    public String eventDetail(@PathVariable Long id, 
+    public String eventDetail(@PathVariable Long id,
                               @RequestParam(required = false) Boolean completed,
+                              //modelはコントローラーからビュー（今回は detail.html）へデータを渡すための入れ物のような役割
                               Model model) {
         Event event = eventService.findEventById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
@@ -57,11 +58,15 @@ public class EventController {
         Optional<Entry> userEntry = entryRepository.findByUserIdAndEventId(currentUserId, id);
         userEntry.ifPresent(entry -> model.addAttribute("userEntry", entry));
 
+        // ユーザーが他のイベントに応募中かどうかのフラグ
+        boolean hasActiveEntry = entryRepository.existsByUserIdAndStatus(currentUserId, "WAITING");
+        //model(入れ物)へ addAttribute でtrue または false の値を格納 => hasActiveEntry が boolean型な為
+        model.addAttribute("hasActiveEntry", hasActiveEntry);
+
         // 応募完了フラグがあればモデルに追加
         if (Boolean.TRUE.equals(completed)) {
             model.addAttribute("showCompletionModal", true);
         }
-
         return "event/detail";
     }
 }
