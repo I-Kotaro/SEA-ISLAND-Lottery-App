@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/ticket")
 public class TicketController {
 
+    //ここで次呼ぶフォルダを TicketService 指定
     private final TicketService ticketService;
 
     @Autowired
@@ -20,6 +21,8 @@ public class TicketController {
         this.ticketService = ticketService;
     }
 
+    //@PathVariable => URLにあるパス値(id)を取得するアノテーション
+    //Model model => HTMLにデータを渡す箱(addAttributeで使う)
     @GetMapping("/{id}")
     public String showTicket(@PathVariable("id") Long id, Model model) {
         TicketDto ticketDto = ticketService.getTicketInfo(id);
@@ -29,6 +32,7 @@ public class TicketController {
             return "redirect:/";
         }
 
+        //Thymeleafで <span th:text="${userName}"></span> と使える
         model.addAttribute("entryId", ticketDto.getEntryId());
         model.addAttribute("userName", ticketDto.getUserName());
         model.addAttribute("eventName", ticketDto.getEventName());
