@@ -49,6 +49,32 @@ public class Event {
     @Column(name = "avg_time_per_queue")
     private Integer avgTimePerQueue;
 
+    //    @Data機能でLombokによって自動生成されるコード avgTimePerQueueパターン
+    //    // ... フィールド定義 ...
+    //    private Integer avgTimePerQueue; => これをEventServiceで使用
+    //
+    //    // ゲッター (Getter)
+    //    public Integer getAvgTimePerQueue() {
+    //        return this.avgTimePerQueue;
+    //    }
+    //
+    //    // セッター (Setter)
+    //    public void setAvgTimePerQueue(Integer avgTimePerQueue) {
+    //        this.avgTimePerQueue = avgTimePerQueue;
+    //    }
+    //
+    //    // `equals`, `hashCode`, `toString` も自動生成される
+    //    @Override
+    //    public boolean equals(Object o) { ... }
+    //
+    //    @Override
+    //    public int hashCode() { ... }
+    //
+    //    @Override
+    //    public String toString() {
+    //        return "Event(id=" + this.id + ", name=" + this.name + ", ... avgTimePerQueue=" + this.avgTimePerQueue + ")";
+    //    }
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

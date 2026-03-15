@@ -9,15 +9,15 @@
 <div layout:fragment="content" class="container mx-auto p-6">
 
     <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8">マイページ</h1>
+        <h1 class="text-gray-700 text-3xl font-bold mb-8">マイページ</h1>
 
         <!-- ユーザー情報編集 -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-2xl font-semibold mb-4">ユーザー情報</h2>
+            <h2 class="text-gray-700 text-2xl font-semibold mb-4">ユーザー情報</h2>
             <form th:action="@{/mypage/update}" th:object="${user}" method="post" class="space-y-4">
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">ユーザー名</label>
-                    <div class="mt-1 flex rounded-md shadow-sm">
+                    <label for="name" class="text-gray-700 block text-sm font-medium text-gray-700">ユーザー名</label>
+                    <div class="text-gray-700 mt-1 flex rounded-md shadow-sm">
                         <input type="text" id="name" th:field="*{name}"
                                class="flex-1 block w-full rounded-none rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <button type="submit"

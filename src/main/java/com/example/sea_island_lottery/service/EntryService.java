@@ -7,6 +7,7 @@ import com.example.sea_island_lottery.entity.User;
 import com.example.sea_island_lottery.repository.EntryRepository;
 import com.example.sea_island_lottery.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,25 @@ public class EntryService {
     public EntryService(EntryRepository entryRepository, EventRepository eventRepository) {
         this.entryRepository = entryRepository;
         this.eventRepository = eventRepository;
+    }
+
+    // 応募ステータスを更新するメソッド
+    public void updateEntryStatus(Long entryId, String status) {
+        Entry entry = entryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("Entry not found with id: " + entryId));
+        entry.setStatus(status);
+        entryRepository.save(entry);
+    }
+
+    // 3時間以上 "WAITING" ステータスの応募をリセットするスケジュールされたタスク
+    @Scheduled(fixedRate = 3600000) // 1時間ごとに実行
+    public void resetOldWaitingEntries() {
+        LocalDateTime threeHoursAgo = LocalDateTime.now().minusHours(3);
+        List<Entry> oldEntries = entryRepository.findByStatusAndCreatedAtBefore("WAITING", threeHoursAgo);
+        for (Entry entry : oldEntries) {
+            entry.setStatus("NOT_ENTERED");
+            entryRepository.save(entry);
+        }
     }
 
     //DTO使用パターンで作成が必要なメソッド＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝

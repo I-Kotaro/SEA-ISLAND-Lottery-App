@@ -27,6 +27,7 @@ public class TicketService {
             return null;
         }
 
+        //.get() => Optionalという箱から中身を取り出すデフォルトメソッド
         Entry entry = entryOptional.get();
         TicketDto ticketDto = new TicketDto();
         ticketDto.setEntryId(entry.getId());
@@ -37,13 +38,27 @@ public class TicketService {
         int queueNumber = eventService.getQueueNumber(eventId);
         int waitTime = eventService.getWaitTime(eventId);
 
+        // イベントごとの1組あたりの平均時間を取得
+        //getEvent()はリレーションによってentryからeventを取得可能
+        int avg_time_per_queue = entry.getEvent().getAvgTimePerQueue();
+
         // 待機組数から1を引く (ただし0未満にはならないようにする)
         int displayQueueNumber = Math.max(0, queueNumber - 1);
-        int displayWaitTime = Math.max(0, waitTime - 900);
+
+        // 待ち時間から自分の分の平均時間を引く
+        int displayWaitTime = Math.max(0, waitTime - avg_time_per_queue);
 
         ticketDto.setQueueNumber(displayQueueNumber);
         ticketDto.setWaitTime(displayWaitTime);
 
         return ticketDto;
+    }
+
+    //指定されたユーザーの最新応募中チケットを取得
+    public TicketDto getLatestWaitingTicketByUserId(java.util.UUID userId) {
+        return entryRepository.findByUserIdAndStatus(userId, "WAITING").stream()
+                .findFirst()
+                .map(entry -> getTicketInfo(entry.getId()))
+                .orElse(null);
     }
 }

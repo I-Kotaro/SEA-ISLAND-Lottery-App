@@ -9,7 +9,25 @@
 
 <div layout:fragment="content" class="pt-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden p-8">
+
+        <!-- チケットがない場合の表示 -->
+        <div th:if="${noActiveEntry}" class="bg-white rounded-3xl shadow-xl overflow-hidden mt-5 py-12 text-center">
+            <div th:unless="${noActiveEntry}" class="mb-6">
+                <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-700 mb-4">現在、応募中のイベントはありません</h1>
+            <p class="text-gray-500 mb-8">イベントを探して応募してみましょう！</p>
+            <a th:href="@{/}"
+               class="inline-block bg-blue-500 text-white px-8 py-3 rounded-full hover:bg-blue-600 transition duration-300 font-bold text-lg shadow-lg">
+                イベント一覧へ
+            </a>
+        </div>
+
+        <!-- チケットがある場合の表示 -->
+        <div th:unless="${noActiveEntry}" class="bg-white rounded-3xl shadow-xl overflow-hidden p-8">
 
             <div class="text-center mb-8">
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-700 leading-tight tracking-tight">
@@ -29,13 +47,13 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-y border-gray-100 py-6">
                     <div class="text-center">
-                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">待機組数</p>
+                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">待ち組数</p>
                         <p class="text-4xl font-bold text-gray-700">
                             <span th:text="${queueNumber}">0</span>組
                         </p>
                     </div>
                     <div class="text-center">
-                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">待機時間</p>
+                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">待ち時間</p>
                         <p class="text-4xl font-bold text-gray-700">
                             約<span th:text="${waitTime}">0</span>分
                         </p>
@@ -56,7 +74,7 @@
                 <form th:action="@{/entries/{id}/cancel(id=${entryId})}" method="post"
                       onsubmit="return confirm('本当にキャンセルしますか？');">
                     <button type="submit"
-                            class="text-gray-400 hover:text-gray-800 font-medium transition duration-300 border-b border-transparent hover:border-gray-800 pb-0.5">
+                            class="text-gray-400 hover:text-gray-700 font-medium transition duration-300 border-b border-transparent hover:border-gray-800 pb-0.5">
                         キャンセルする
                     </button>
                 </form>

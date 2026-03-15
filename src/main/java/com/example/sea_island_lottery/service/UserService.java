@@ -38,6 +38,11 @@ public class UserService {
     }
     //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
+    @Transactional(readOnly = true)
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     //DBから1件ユーザーを取得するメソッド
     //DB操作がトランザクション内(処理成功時だけDBに反映される)で実行されるアノテーション
     @Transactional(readOnly = true)

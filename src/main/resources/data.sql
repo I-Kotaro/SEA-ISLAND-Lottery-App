@@ -48,14 +48,14 @@ VALUES ('バックヤードツアー',
         '話すマグロ綱山さんと会話できるユニークな体験イベントです。',
         '/images/tuna.jpeg', '13:00', '14:00', 'open', 5);
 
--- 表示確認用ユーザー
-INSERT INTO users (id, name)
-VALUES ('00000000-0000-0000-0000-000000000001', 'ユーザー１'),
-       ('00000000-0000-0000-0000-000000000002', 'ユーザー２'),
-       ('00000000-0000-0000-0000-000000000003', 'ユーザー３');
+-- 表示確認用ユーザー (パスワードは "password")
+INSERT INTO users (id, name, email, password, role)
+VALUES ('00000000-0000-0000-0000-000000000001', 'ユーザー１', 'user1@example.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'ROLE_USER'),
+       ('00000000-0000-0000-0000-000000000002', 'ユーザー２', 'user2@example.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'ROLE_USER'),
+       ('00000000-0000-0000-0000-000000000003', 'ユーザー３', 'user3@example.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVuHOn2', 'ROLE_USER');
 
 -- テスト応募データ
 INSERT INTO entries (user_id, event_id, status)
-VALUES ('00000000-0000-0000-0000-000000000001', 1, 'WAITING'), -- 田中 太郎がバックヤードツアーに応募
-       ('00000000-0000-0000-0000-000000000002', 1, 'WAITING'), -- 鈴木 花子がクジラのコミュニケーションを知ろうに応募
-       ('00000000-0000-0000-0000-000000000003', 3, 'WAITING'); -- 佐藤 次郎がサメ博士のトークショーに応募
+VALUES ('00000000-0000-0000-0000-000000000001', 1, 'WAITING'),
+       ('00000000-0000-0000-0000-000000000002', 1, 'WAITING'),
+       ('00000000-0000-0000-0000-000000000003', 3, 'WAITING');

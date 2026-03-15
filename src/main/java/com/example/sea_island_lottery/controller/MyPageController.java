@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,9 +27,6 @@ public class MyPageController {
     private final EventService eventService;
     private final EntryRepository entryRepository;
 
-    // テスト用の固定ユーザーID
-    private final UUID TEST_USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-
     @Autowired
     public MyPageController(UserService userService, EventService eventService, EntryRepository entryRepository) {
         this.userService = userService;
@@ -37,13 +35,18 @@ public class MyPageController {
     }
 
     @GetMapping
-    public String index(Model model) {
-        User user = userService.findUserById(TEST_USER_ID)
+    public String index(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        User user = userService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         model.addAttribute("user", user);
 
         // 応募中のイベントを取得し、DTOに変換
-        List<Entry> entries = entryRepository.findByUserId(TEST_USER_ID);
+        List<Entry> entries = entryRepository.findByUserId(user.getId());
         List<EventDto> waitingEvents = entries.stream()
                 .filter(entry -> "WAITING".equals(entry.getStatus()))
                 .map(entry -> eventService.convertToDto(entry.getEvent()))
@@ -53,16 +56,32 @@ public class MyPageController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute User userForm) {
+    public String update(@ModelAttribute User userForm, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        User currentUser = userService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         User user = new User();
         user.setName(userForm.getName());
-        userService.updateUser(TEST_USER_ID, user);
+        userService.updateUser(currentUser.getId(), user);
         return "redirect:/mypage";
     }
 
     @PostMapping("/delete")
-    public String delete() {
-        userService.deleteUser(TEST_USER_ID);
-        return "redirect:/";
+    public String delete(Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        User currentUser = userService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        userService.deleteUser(currentUser.getId());
+        return "redirect:/logout";
     }
 }

@@ -5,12 +5,14 @@ import com.example.sea_island_lottery.entity.Event;
 import com.example.sea_island_lottery.entity.User;
 import com.example.sea_island_lottery.repository.EntryRepository;
 import com.example.sea_island_lottery.service.EventService;
+import com.example.sea_island_lottery.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,20 +21,27 @@ public class EntryController {
 
     private final EventService eventService;
     private final EntryRepository entryRepository;
-
-    // テスト用の固定ユーザーID
-    private final UUID TEST_USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private final UserService userService;
 
     @Autowired
-    public EntryController(EventService eventService, EntryRepository entryRepository) {
+    public EntryController(EventService eventService, EntryRepository entryRepository, UserService userService) {
         this.eventService = eventService;
         this.entryRepository = entryRepository;
+        this.userService = userService;
     }
 
     @PostMapping("/entries/create")
-    public String createEntry(@RequestParam("eventId") Long eventId) {
-        // 固定のテストユーザーを使用
-        Optional<Entry> existingEntry = entryRepository.findByUserIdAndEventId(TEST_USER_ID, eventId);
+    public String createEntry(@RequestParam("eventId") Long eventId, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        User currentUser = userService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        UUID currentUserId = currentUser.getId();
+
+        Optional<Entry> existingEntry = entryRepository.findByUserIdAndEventId(currentUserId, eventId);
 
         Entry entry;
         if (existingEntry.isPresent()) {
@@ -42,42 +51,30 @@ public class EntryController {
                 entry = entryRepository.save(entry);
             }
         } else {
-            User user = new User();
-            user.setId(TEST_USER_ID);
-
             Event event = new Event();
             event.setId(eventId);
 
             entry = new Entry();
-            entry.setUser(user);
+            entry.setUser(currentUser);
             entry.setEvent(event);
             entry.setStatus("WAITING");
             entry = entryRepository.save(entry);
         }
 
-        // 完了パラメータを付けてイベント詳細へリダイレクト
         return "redirect:/events/" + eventId + "?completed=true";
     }
 
     @PostMapping("/entries/{id}/arrive")
     public String arrive(@PathVariable("id") Long id) {
-        Optional<Entry> entryOptional = entryRepository.findById(id);
-        if (entryOptional.isEmpty()) {
-            return "redirect:/";
-        }
-        Entry entry = entryOptional.get();
-        eventService.updateEntryStatus(id, "NOT_ENTERED");
-        return "redirect:/events/" + entry.getEvent().getId();
+        // 到着（受付完了）時はステータスをCOMPLETEDに変更し、ルートへ戻す
+        eventService.updateEntryStatus(id, "COMPLETED"); 
+        return "redirect:/";
     }
 
     @PostMapping("/entries/{id}/cancel")
     public String cancel(@PathVariable("id") Long id) {
-        Optional<Entry> entryOptional = entryRepository.findById(id);
-        if (entryOptional.isEmpty()) {
-            return "redirect:/";
-        }
-        Entry entry = entryOptional.get();
+        // キャンセル時はステータスをNOT_ENTEREDに戻し、ルートへ戻す
         eventService.updateEntryStatus(id, "NOT_ENTERED");
-        return "redirect:/events/" + entry.getEvent().getId();
+        return "redirect:/";
     }
 }
