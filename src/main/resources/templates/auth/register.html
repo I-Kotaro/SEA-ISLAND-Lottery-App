@@ -7,7 +7,7 @@
 </head>
 <body>
 <div layout:fragment="content" class="flex justify-center items-center min-h-[60vh]">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div class="bg-white p-8 mt-12 rounded-lg shadow-md w-full max-w-md">
         <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">新規登録</h2>
         <form th:action="@{/register}" th:object="${registerRequest}" method="post">
             <div class="mb-4">
@@ -31,7 +31,9 @@
             </button>
         </form>
         <div class="mt-4 text-center">
-            <p class="text-gray-600">すでにアカウントをお持ちですか？ <a th:href="@{/login}" class="text-blue-500 hover:underline">ログイン</a></p>
+            <p class="text-gray-600">すでにアカウントをお持ちですか？ <a th:href="@{/login}"
+                                                                        class="text-blue-500 hover:underline">ログイン</a>
+            </p>
         </div>
     </div>
 </div>
