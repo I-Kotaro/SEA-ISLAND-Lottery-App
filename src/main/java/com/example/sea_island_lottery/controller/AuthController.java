@@ -2,6 +2,7 @@ package com.example.sea_island_lottery.controller;
 
 import com.example.sea_island_lottery.dto.RegisterRequest;
 import com.example.sea_island_lottery.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +30,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute RegisterRequest request) {
-        authService.register(request);
-        return "redirect:/login";
+    public String register(@ModelAttribute RegisterRequest request, HttpServletRequest httpServletRequest) {
+        authService.register(request, httpServletRequest);
+        return "redirect:/";
     }
 }
