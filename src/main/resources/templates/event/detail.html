@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
     <title th:text="${event.name}">イベント詳細</title>
@@ -59,41 +60,58 @@
 
                 <!-- アクションボタン (中央配置) -->
                 <div class="flex flex-col items-center gap-4">
-                    <!-- 応募中(WAITING)の場合に表示されるエリア -->
-                    <div th:if="${userEntry != null and userEntry.status == 'WAITING'}"
-                         class="w-full max-w-md space-y-4">
-                        <button type="button"
-                                disabled
-                                class="w-full bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg cursor-not-allowed">
-                            応募が完了しました
-                        </button>
-                    </div>
-
-                    <!-- 他のイベントに応募中の場合に表示 -->
-                    <div th:if="${userEntry == null and hasActiveEntry}"
-                         class="w-full max-w-md bg-gray-300 text-gray-600 border px-8 py-4 rounded-full font-bold text-lg text-center ">
-                        他のイベントに応募中のため<br class="sm:hidden">応募できません
-                    </div>
-
-                    <!-- 応募ボタン (まだ応募していない かつ 他のイベントにも応募していない場合に表示) -->
-                    <form th:if="${(userEntry == null or userEntry.status != 'WAITING') and !hasActiveEntry}"
-                          th:unless="${event.status != 'open'}"
-                          method="post" th:action="@{/entries/create}">
-                        <input type="hidden" name="eventId" th:value="${event.id}">
-                        <!-- コントローラ側で固定ユーザーを使う -->
-                        <button type="submit"
-                                class="w-full bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 hover:shadow-lg focus:ring-4 focus:ring-blue-200 transition duration-300 font-bold text-lg flex justify-center items-center group transform hover:-translate-y-0.5">
-                            <span>このイベントに応募する</span>
+                    
+                    <!-- 未ログインユーザー向けの表示 -->
+                    <div sec:authorize="isAnonymous()" th:if="${event.status == 'open'}" class="w-full max-w-md">
+                        <a th:href="@{/login}"
+                           class="w-full bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 hover:shadow-lg focus:ring-4 focus:ring-blue-200 transition duration-300 font-bold text-lg flex justify-center items-center group transform hover:-translate-y-0.5">
+                            <span>ログインして応募する</span>
                             <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none"
                                  stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                             </svg>
-                        </button>
-                    </form>
+                        </a>
+                    </div>
 
-                    <!-- 受付終了時の表示 -->
-                    <button th:if="${event.status != 'open' and (userEntry == null or userEntry.status != 'WAITING') and !hasActiveEntry}"
+                    <!-- ログイン済みユーザー向けの表示 -->
+                    <div sec:authorize="isAuthenticated()" class="w-full flex flex-col items-center gap-4">
+                        <!-- 応募中(WAITING)の場合に表示されるエリア -->
+                        <div th:if="${userEntry != null and userEntry.status == 'WAITING'}"
+                             class="w-full max-w-md space-y-4">
+                            <button type="button"
+                                    disabled
+                                    class="w-full bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg cursor-not-allowed">
+                                応募が完了しました
+                            </button>
+                        </div>
+
+                        <!-- 他のイベントに応募中の場合に表示 -->
+                        <div th:if="${userEntry == null and hasActiveEntry}"
+                             class="w-full max-w-md bg-gray-300 text-gray-600 border px-8 py-4 rounded-full font-bold text-lg text-center ">
+                            他のイベントに応募中のため<br class="sm:hidden">応募できません
+                        </div>
+
+                        <!-- 応募ボタン (まだ応募していない かつ 他のイベントにも応募していない場合に表示) -->
+                        <form th:if="${(userEntry == null or userEntry.status != 'WAITING') and !hasActiveEntry}"
+                              th:unless="${event.status != 'open'}"
+                              method="post" th:action="@{/entries/create}"
+                              class="w-full max-w-md">
+                            <input type="hidden" name="eventId" th:value="${event.id}">
+                            <button type="submit"
+                                    class="w-full bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 hover:shadow-lg focus:ring-4 focus:ring-blue-200 transition duration-300 font-bold text-lg flex justify-center items-center group transform hover:-translate-y-0.5">
+                                <span>このイベントに応募する</span>
+                                <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- 受付終了時の表示 (未ログイン、ログイン済み共通) -->
+                    <button th:if="${event.status != 'open'}"
                             disabled
                             class="w-full max-w-md bg-gray-100 text-gray-400 border border-gray-200 px-8 py-4 rounded-full cursor-not-allowed font-bold text-lg text-center shadow-inner">
                         応募は締め切られました

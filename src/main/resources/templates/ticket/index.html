@@ -36,13 +36,15 @@
             </div>
 
             <div class="space-y-6">
-                <div>
-                    <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">お名前</p>
-                    <p class="text-xl font-bold text-gray-700"><span th:text="${userName}">山田 太郎</span>　様</p>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">応募中イベント</p>
-                    <p class="text-xl font-bold text-gray-700" th:text="${eventName}">イベント名</p>
+                <div class="mx-auto w-fit text-left space-y-6">
+                    <div>
+                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">お名前</p>
+                        <p class="text-xl font-bold text-gray-700"><span th:text="${userName}">山田 太郎</span>　様</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">応募中イベント</p>
+                        <p class="text-xl font-bold text-gray-700" th:text="${eventName}">イベント名</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-y border-gray-100 py-6">
