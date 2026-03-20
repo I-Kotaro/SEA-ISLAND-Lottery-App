@@ -28,6 +28,14 @@ public class EntryService {
         this.eventRepository = eventRepository;
     }
 
+    // 応募ステータスを更新するメソッド
+    public void updateEntryStatus(Long entryId, String status) {
+        Entry entry = entryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("Entry not found with id: " + entryId));
+        entry.setStatus(status);
+        entryRepository.save(entry);
+    }
+
     //DTO使用パターンで作成が必要なメソッド＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
     // DTOを返すメソッド
     @Transactional(readOnly = true)

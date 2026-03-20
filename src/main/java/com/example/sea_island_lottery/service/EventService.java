@@ -96,4 +96,12 @@ public class EventService {
     public Optional<Event> findEventById(Long id) {
         return eventRepository.findById(id);
     }
+
+    // 応募ステータスを更新するメソッド
+    public void updateEntryStatus(Long entryId, String status) {
+        Entry entry = entryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("Entry not found with id: " + entryId));
+        entry.setStatus(status);
+        entryRepository.save(entry);
+    }
 }
