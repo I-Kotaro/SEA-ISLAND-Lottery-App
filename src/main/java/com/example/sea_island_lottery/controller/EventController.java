@@ -52,10 +52,12 @@ public class EventController {
 
     // イベント詳細表示
     @GetMapping("/events/{id}")
-    public String eventDetail(@PathVariable Long id,
-                              @RequestParam(required = false) Boolean completed,
-                              Principal principal,
+    public String eventDetail(@PathVariable("id") Long id,
+                              @RequestParam(value = "completed", required = false) Boolean completed,
+                              jakarta.servlet.http.HttpServletRequest request,
                               Model model) {
+        Principal principal = request.getUserPrincipal();
+
         Event event = eventService.findEventById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
         EventDto eventDto = eventService.convertToDto(event);

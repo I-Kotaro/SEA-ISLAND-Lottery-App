@@ -60,7 +60,7 @@
 
                 <!-- アクションボタン (中央配置) -->
                 <div class="flex flex-col items-center gap-4">
-                    
+
                     <!-- 未ログインユーザー向けの表示 -->
                     <div sec:authorize="isAnonymous()" th:if="${event.status == 'open'}" class="w-full max-w-md">
                         <a th:href="@{/login}"
