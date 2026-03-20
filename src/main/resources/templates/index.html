@@ -12,7 +12,7 @@
         <!-- th:each を使ってカードを繰り返し生成 -->
         <div th:each="event : ${events}"
              class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
-            <img class="text-gray-700 w-24 h-24 object-cover rounded-full mb-4" th:src="${event.imageUrl}"
+            <img class="text-gray-700 w-37 h-34 object-cover rounded-xl mb-4" th:src="${event.imageUrl}"
                  alt="Lottery Item">
             <h3 class="text-gray-700 text-xl font-semibold mb-2" th:text="${event.name}">イベント</h3>
 
