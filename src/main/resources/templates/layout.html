@@ -18,9 +18,9 @@
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen bg-gray-100">
+<body class="flex flex-col min-h-screen">
 
-<header class="bg-gray-200 text-blue p-4 shadow-md">
+<header class="bg-white/70 backdrop-blur-sm text-blue p-4 shadow-md sticky top-0 z-50">
     <div class="container mx-auto flex justify-between items-center">
         <a href="/">
             <img src="/images/SEA_ISLAND_logo.png" srcset="/images/SEA_ISLAND_logo.png" alt="Sea Island Lottery Logo"
@@ -61,6 +61,32 @@
 
 <!-- 各ページ固有のスクリプトがここに挿入される -->
 <th:block layout:fragment="scripts"></th:block>
+
+<!-- 泡のエフェクト用コンテナ -->
+<div class="bubbles-container">
+    <!-- 1-10個目の泡 -->
+    <div class="bubble" style="--size: 20px; --left: 10%; --duration: 7s; --delay: 0s; --drift: 30px;"></div>
+    <div class="bubble" style="--size: 10px; --left: 20%; --duration: 5s; --delay: 1s; --drift: -20px;"></div>
+    <div class="bubble" style="--size: 15px; --left: 35%; --duration: 9s; --delay: 2s; --drift: 40px;"></div>
+    <div class="bubble" style="--size: 25px; --left: 50%; --duration: 6s; --delay: 0.5s; --drift: -30px;"></div>
+    <div class="bubble" style="--size: 12px; --left: 65%; --duration: 8s; --delay: 3s; --drift: 25px;"></div>
+    <div class="bubble" style="--size: 18px; --left: 80%; --duration: 10s; --delay: 1.5s; --drift: -40px;"></div>
+    <div class="bubble" style="--size: 22px; --left: 90%; --duration: 7s; --delay: 4s; --drift: 15px;"></div>
+    <div class="bubble" style="--size: 8px; --left: 5%; --duration: 11s; --delay: 2.5s; --drift: 10px;"></div>
+    <div class="bubble" style="--size: 30px; --left: 42%; --duration: 12s; --delay: 0.2s; --drift: -50px;"></div>
+    <div class="bubble" style="--size: 14px; --left: 75%; --duration: 6.5s; --delay: 5s; --drift: 20px;"></div>
+    <!-- 11-20個目の泡を追加 -->
+    <div class="bubble" style="--size: 18px; --left: 15%; --duration: 8.5s; --delay: 0.5s; --drift: -25px;"></div>
+    <div class="bubble" style="--size: 24px; --left: 28%; --duration: 7.5s; --delay: 3.5s; --drift: 35px;"></div>
+    <div class="bubble" style="--size: 10px; --left: 45%; --duration: 5.5s; --delay: 1.5s; --drift: -15px;"></div>
+    <div class="bubble" style="--size: 20px; --left: 58%; --duration: 9.5s; --delay: 2.5s; --drift: 45px;"></div>
+    <div class="bubble" style="--size: 14px; --left: 72%; --duration: 6.8s; --delay: 4.5s; --drift: -35px;"></div>
+    <div class="bubble" style="--size: 28px; --left: 88%; --duration: 11s; --delay: 0.8s; --drift: 20px;"></div>
+    <div class="bubble" style="--size: 12px; --left: 3%; --duration: 7.2s; --delay: 5.5s; --drift: 30px;"></div>
+    <div class="bubble" style="--size: 16px; --left: 38%; --duration: 8s; --delay: 2.8s; --drift: -40px;"></div>
+    <div class="bubble" style="--size: 22px; --left: 62%; --duration: 6.2s; --delay: 1.2s; --drift: 25px;"></div>
+    <div class="bubble" style="--size: 10px; --left: 95%; --duration: 5.8s; --delay: 3.2s; --drift: -20px;"></div>
+</div>
 
 </body>
 </html>
