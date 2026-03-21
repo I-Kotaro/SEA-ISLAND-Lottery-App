@@ -86,7 +86,7 @@
                         </div>
 
                         <!-- 他のイベントに応募中の場合に表示 -->
-                        <div th:if="${userEntry == null and hasActiveEntry}"
+                        <div th:if="${hasActiveEntry}"
                              class="w-full max-w-md bg-gray-300 text-base text-1xl text-gray-600 border px-8 py-4 rounded-full font-bold text-center ">
                             他のイベントに応募中の<br class="sm:hidden">ため応募できません
                         </div>

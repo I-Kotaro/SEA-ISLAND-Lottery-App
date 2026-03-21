@@ -31,6 +31,9 @@ public interface EntryRepository extends JpaRepository<Entry, Long> {
     // ユーザーIDとステータスで応募が存在するかチェック
     boolean existsByUserIdAndStatus(UUID userId, String status);
 
+    // ユーザーIDとステータスで、応募中イベント以外で他にWAITUNGステータスイベントが存在するかチェック
+    boolean existsByUserIdAndStatusAndEventIdNot(UUID userId, String status, Long eventId);
+
     // アカウント削除時にユーザーIDと紐づく応募情報をすべて削除
     //  DELETE FROM entries WHERE user_id = ? が生成される
     void deleteByUserId(UUID userId);

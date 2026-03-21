@@ -73,8 +73,8 @@ public class EventController {
             Optional<Entry> userEntry = entryRepository.findByUserIdAndEventId(currentUserId, id);
             userEntry.ifPresent(entry -> model.addAttribute("userEntry", entry));
 
-            // ユーザーが他のイベントに応募中かどうかのフラグ
-            boolean hasActiveEntry = entryRepository.existsByUserIdAndStatus(currentUserId, "WAITING");
+            // ユーザーが他のイベントに応募中かどうかのフラグ（このイベント以外のWAITINGがあるか）
+            boolean hasActiveEntry = entryRepository.existsByUserIdAndStatusAndEventIdNot(currentUserId, "WAITING", id);
             model.addAttribute("hasActiveEntry", hasActiveEntry);
         } else {
             model.addAttribute("hasActiveEntry", false);
