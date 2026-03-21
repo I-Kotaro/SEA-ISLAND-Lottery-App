@@ -20,51 +20,8 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-<header class="bg-white/70 backdrop-blur-sm text-blue p-4 shadow-md sticky top-0 z-50">
-    <div class="container mx-auto flex justify-between items-center">
-        <a href="/">
-            <img src="/images/SEA_ISLAND_logo.png" srcset="/images/SEA_ISLAND_logo.png" alt="Sea Island Lottery Logo"
-                 class="h-12 w-auto">
-        </a>
-        <nav class="flex items-center">
-            <a href="/" class="text-lg font-bold text-blue-500 hover:text-blue-300 mx-2">イベント</a>
-
-            <!--  sec:authorize => ログイン中ユーザー（認証）、何ができるか（認可）を管理するSpring Security機能をHTMLで使えるようにしてるThymeleaf文-->
-            <!--   sec:authorize="isAnonymous()" => 未ログイン中に表示する -->
-            <th:block sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="text-lg font-bold text-blue-500 hover:text-blue-300 mx-2">ログイン</a>
-                <a th:href="@{/register}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mx-2">新規登録</a>
-            </th:block>
-            <!--   sec:authorize="isAuthenticated()" => ログイン中に表示する -->
-            <th:block sec:authorize="isAuthenticated()">
-                <a th:href="@{/ticket}" class="text-lg font-bold text-blue-500 hover:text-blue-300 mx-2">チケット</a>
-                <a th:href="@{/mypage}" class="text-lg font-bold text-blue-500 hover:text-blue-300 mx-2">マイページ</a>
-                <form th:action="@{/logout}" method="post" class="inline">
-                    <button type="submit" class="text-lg font-bold text-red-500 hover:text-red-300 mx-2">ログアウト
-                    </button>
-                </form>
-            </th:block>
-        </nav>
-    </div>
-</header>
-
-<main class="flex-grow container mx-auto p-4 mb-8" layout:fragment="content">
-    <!-- 各ページのコンテンツがここに挿入される -->
-</main>
-
-
-<footer class="bg-gray-200 p-4 mt-auto">
-    <div class="container mx-auto text-center">
-        <p class="text-blue-600">&copy; 海島SEA ISLAND. All rights reserved.</p>
-    </div>
-</footer>
-
-<!-- 各ページ固有のスクリプトがここに挿入される -->
-<th:block layout:fragment="scripts"></th:block>
-
 <!-- 泡のエフェクト用コンテナ -->
 <div class="bubbles-container">
-    <!-- 1-10個目の泡 -->
     <div class="bubble" style="--size: 20px; --left: 10%; --duration: 7s; --delay: 0s; --drift: 30px;"></div>
     <div class="bubble" style="--size: 10px; --left: 20%; --duration: 5s; --delay: 1s; --drift: -20px;"></div>
     <div class="bubble" style="--size: 15px; --left: 35%; --duration: 9s; --delay: 2s; --drift: 40px;"></div>
@@ -75,7 +32,6 @@
     <div class="bubble" style="--size: 8px; --left: 5%; --duration: 11s; --delay: 2.5s; --drift: 10px;"></div>
     <div class="bubble" style="--size: 30px; --left: 42%; --duration: 12s; --delay: 0.2s; --drift: -50px;"></div>
     <div class="bubble" style="--size: 14px; --left: 75%; --duration: 6.5s; --delay: 5s; --drift: 20px;"></div>
-    <!-- 11-20個目の泡を追加 -->
     <div class="bubble" style="--size: 18px; --left: 15%; --duration: 8.5s; --delay: 0.5s; --drift: -25px;"></div>
     <div class="bubble" style="--size: 24px; --left: 28%; --duration: 7.5s; --delay: 3.5s; --drift: 35px;"></div>
     <div class="bubble" style="--size: 10px; --left: 45%; --duration: 5.5s; --delay: 1.5s; --drift: -15px;"></div>
@@ -87,6 +43,120 @@
     <div class="bubble" style="--size: 22px; --left: 62%; --duration: 6.2s; --delay: 1.2s; --drift: 25px;"></div>
     <div class="bubble" style="--size: 10px; --left: 95%; --duration: 5.8s; --delay: 3.2s; --drift: -20px;"></div>
 </div>
+
+<!-- モバイルメニュー用オーバーレイ (背景の暗転) -->
+<div id="mobile-menu-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+
+<!-- モバイル用サイドメニュー (右からスライド) -->
+<div id="mobile-side-menu" class="fixed top-0 right-0 h-full w-64 bg-white/90 backdrop-blur-md z-[70] transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl flex flex-col">
+    <div class="p-4 border-b border-blue-100 flex justify-between items-center">
+        <span class="font-bold text-blue-600">メニュー</span>
+        <button id="close-menu-button" class="text-blue-600 hover:text-blue-400 p-2">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <nav class="flex flex-col p-4 space-y-6">
+        <a href="/" class="text-lg font-bold text-blue-600 hover:text-blue-400">イベント一覧</a>
+        
+        <th:block sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="text-lg font-bold text-blue-600 hover:text-blue-400">ログイン</a>
+            <a th:href="@{/register}" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 text-center font-bold">新規登録</a>
+        </th:block>
+        <th:block sec:authorize="isAuthenticated()">
+            <a th:href="@{/ticket}" class="text-lg font-bold text-blue-600 hover:text-blue-400">チケット</a>
+            <a th:href="@{/mypage}" class="text-lg font-bold text-blue-600 hover:text-blue-400">マイページ</a>
+            <form th:action="@{/logout}" method="post" class="w-full pt-4 border-t border-blue-50">
+                <button type="submit" class="text-lg font-bold text-red-500 hover:text-red-400 w-full text-left">ログアウト</button>
+            </form>
+        </th:block>
+    </nav>
+</div>
+
+<header class="bg-white/70 backdrop-blur-sm text-blue p-4 shadow-md sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center">
+        <!-- ロゴ -->
+        <a href="/">
+            <img src="/images/SEA_ISLAND_logo.png" srcset="/images/SEA_ISLAND_logo.png" alt="Sea Island Lottery Logo"
+                 class="h-10 sm:h-12 w-auto">
+        </a>
+
+        <!-- PC用ナビゲーション (中画面以上) -->
+        <nav class="hidden md:flex items-center">
+            <a href="/" class="text-lg font-bold text-blue-600 hover:text-blue-400 mx-3">イベント</a>
+
+            <th:block sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="text-lg font-bold text-blue-600 hover:text-blue-400 mx-3">ログイン</a>
+                <a th:href="@{/register}" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition mx-3">新規登録</a>
+            </th:block>
+            <th:block sec:authorize="isAuthenticated()">
+                <a th:href="@{/ticket}" class="text-lg font-bold text-blue-600 hover:text-blue-400 mx-3">チケット</a>
+                <a th:href="@{/mypage}" class="text-lg font-bold text-blue-600 hover:text-blue-400 mx-3">マイページ</a>
+                <form th:action="@{/logout}" method="post" class="inline mx-3">
+                    <button type="submit" class="text-lg font-bold text-red-500 hover:text-red-400">ログアウト</button>
+                </form>
+            </th:block>
+        </nav>
+
+        <!-- モバイル用ハンバーガーボタン (小画面のみ) -->
+        <div class="md:hidden flex items-center">
+            <button id="open-menu-button" class="text-blue-600 hover:text-blue-400 focus:outline-none p-2">
+                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="flex-grow container mx-auto p-4 mb-8" layout:fragment="content">
+    <!-- 各ページのコンテンツがここに挿入される -->
+</main>
+
+<footer class="bg-gray-200 p-4 mt-auto">
+    <div class="container mx-auto text-center">
+        <p class="text-blue-600">&copy; 海島SEA ISLAND. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- サイドメニュー制御スクリプト -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const openBtn = document.getElementById('open-menu-button');
+        const closeBtn = document.getElementById('close-menu-button');
+        const overlay = document.getElementById('mobile-menu-overlay');
+        const sideMenu = document.getElementById('mobile-side-menu');
+
+        function openMenu() {
+            overlay.classList.remove('hidden');
+            // アニメーションのために微小な遅延を入れる
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sideMenu.classList.remove('translate-x-full');
+            }, 10);
+            document.body.classList.add('overflow-hidden'); // 背後のスクロール禁止
+        }
+
+        function closeMenu() {
+            overlay.classList.add('opacity-0');
+            sideMenu.classList.add('translate-x-full');
+            document.body.classList.remove('overflow-hidden');
+
+            // アニメーション終了後に要素を隠す
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openMenu);
+        if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+        if (overlay) overlay.addEventListener('click', closeMenu);
+    });
+</script>
+
+<!-- 各ページ固有のスクリプトがここに挿入される -->
+<th:block layout:fragment="scripts"></th:block>
 
 </body>
 </html>
