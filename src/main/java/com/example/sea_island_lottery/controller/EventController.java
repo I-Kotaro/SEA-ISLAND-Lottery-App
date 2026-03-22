@@ -85,5 +85,6 @@ public class EventController {
             model.addAttribute("showCompletionModal", true);
         }
         return "event/detail";
+
     }
 }

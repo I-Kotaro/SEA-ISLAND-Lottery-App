@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class EntryController {
     }
 
     @PostMapping("/entries/create")
-    public String createEntry(@RequestParam("eventId") Long eventId, Principal principal) {
+    public String createEntry(@RequestParam("eventId") Long eventId, Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -61,14 +62,15 @@ public class EntryController {
             entry = entryRepository.save(entry);
         }
 
-        return "redirect:/events/" + eventId + "?completed=true";
+        redirectAttributes.addFlashAttribute("showCompletionModal", true);
+        return "redirect:/ticket";
     }
 
     // 受付完了orキャンセル時status指定
     @PostMapping("/entries/{id}/arrive")
     public String arrive(@PathVariable("id") Long id) {
         // 受付完了時はステータスをNOT_ENTEREDに変更し、ルートへ戻す
-        eventService.updateEntryStatus(id, "NOT_ENTERED"); 
+        eventService.updateEntryStatus(id, "NOT_ENTERED");
         return "redirect:/";
     }
 
