@@ -84,9 +84,10 @@ Spring Boot と Tailwind CSS を用いて、
 
 - Delete： アカウント削除
 
-## ER図（予定）
+## ER図
 
-※ 要追加
+![ER図](./docs/ER.png)
+
 
 ## 苦労点・気付き・学び
 
