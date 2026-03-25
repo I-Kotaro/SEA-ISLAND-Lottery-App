@@ -37,8 +37,9 @@ out/
 ### VS Code ###
 .vscode/
 
-# application properties
-src/main/resources/application.properties
+# ローカル開発ではapplication-local.properties使用
+# デプロイ用はapplication properties使用
+src\main\resources\application-local.properties
 
 ### output.css ###
 src/main/resources/static/css/output.css
