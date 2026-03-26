@@ -1,5 +1,20 @@
 # ======================================================================================
-# STAGE 1: Build Stage
+# STAGE 1: Frontend Build Stage
+# ======================================================================================
+FROM node:20-slim AS frontend-build
+
+WORKDIR /app
+
+# npm依存関係をインストール
+COPY package*.json ./
+RUN npm ci
+
+# ソースコードをコピーして CSS をビルド
+COPY . .
+RUN npm run build:css
+
+# ======================================================================================
+# STAGE 2: Build Stage
 # ======================================================================================
 FROM gradle:8.5.0-jdk21-jammy AS build
 
@@ -15,12 +30,15 @@ RUN gradle dependencies --no-daemon || true
 # ソースコードをコピー
 COPY . /app/
 
+# frontend-build ステージで生成された output.css をコピー
+COPY --from=frontend-build /app/src/main/resources/static/css/output.css /app/src/main/resources/static/css/output.css
+
 # アプリケーションをビルド（実行可能な単一のJARファイルを生成）
 RUN gradle bootJar -x test --no-daemon
 
 
 # ======================================================================================
-# STAGE 2: Runtime Stage
+# STAGE 3: Runtime Stage
 # ======================================================================================
 FROM eclipse-temurin:21-jre-jammy
 
