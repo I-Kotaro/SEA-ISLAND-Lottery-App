@@ -41,9 +41,6 @@ out/
 # デプロイ用はapplication properties使用
 src\main\resources\application-local.properties
 
-### output.css ###
-src/main/resources/static/css/output.css
-
 ### Node.js ###
 node_modules/
 npm-debug.log*

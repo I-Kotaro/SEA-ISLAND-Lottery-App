@@ -1,20 +1,5 @@
 # ======================================================================================
-# STAGE 1: Frontend Build Stage
-# ======================================================================================
-FROM node:20-slim AS frontend-build
-
-WORKDIR /app
-
-# npm依存関係をインストール
-COPY package*.json ./
-RUN npm ci
-
-# ソースコードをコピーして CSS をビルド
-COPY . .
-RUN npm run build:css
-
-# ======================================================================================
-# STAGE 2: Build Stage
+# STAGE 1: Build Stage
 # ======================================================================================
 FROM gradle:8.5.0-jdk21-jammy AS build
 
@@ -27,18 +12,15 @@ COPY gradle/ /app/gradle/
 # 依存関係をダウンロード
 RUN gradle dependencies --no-daemon || true
 
-# ソースコードをコピー
+# ソースコードをコピー（ここにローカルでビルドした output.css も含まれる）
 COPY . /app/
-
-# frontend-build ステージで生成された output.css をコピー
-COPY --from=frontend-build /app/src/main/resources/static/css/output.css /app/src/main/resources/static/css/output.css
 
 # アプリケーションをビルド（実行可能な単一のJARファイルを生成）
 RUN gradle bootJar -x test --no-daemon
 
 
 # ======================================================================================
-# STAGE 3: Runtime Stage
+# STAGE 2: Runtime Stage
 # ======================================================================================
 FROM eclipse-temurin:21-jre-jammy
 
@@ -51,9 +33,7 @@ EXPOSE ${PORT}
 WORKDIR /app
 
 # ビルドステージから実行可能なJARファイルのみをコピー
-# バージョンに関わらず app.jar としてコピーすることで、起動コマンドを固定
 COPY --from=build /app/build/libs/*-0.0.1-SNAPSHOT.jar app.jar
 
 # Spring Bootアプリケーションを実行
-# server.port を環境変数 PORT で上書きするように設定
 ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
