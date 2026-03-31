@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,6 +50,8 @@ public class EntryController {
             entry = existingEntry.get();
             if (!"WAITING".equals(entry.getStatus())) {
                 entry.setStatus("WAITING");
+                // 再応募（ステータスが更新された時）は、現在時刻を再設定して列の最後に並ぶようにする
+                entry.setCreatedAt(LocalDateTime.now());
                 entry = entryRepository.save(entry);
             }
         } else {

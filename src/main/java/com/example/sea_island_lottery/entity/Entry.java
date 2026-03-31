@@ -42,6 +42,6 @@ public class Entry {
 
     //応募日時を正確に記録, 3時間を判断する基準点
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

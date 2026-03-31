@@ -35,20 +35,19 @@ public class TicketService {
         ticketDto.setEventName(entry.getEvent().getName());
 
         long eventId = entry.getEvent().getId();
-        int queueNumber = eventService.getQueueNumber(eventId);
-        int waitTime = eventService.getWaitTime(eventId);
+
+        // 自分より前に予約されている数（自分より早い作成日時かつWAITINGステータス）を取得
+        long countBeforeMe = entryRepository.countByEventIdAndStatusAndCreatedAtBefore(
+                eventId, "WAITING", entry.getCreatedAt());
 
         // イベントごとの1組あたりの平均時間を取得
-        //getEvent()はリレーションによってentryからeventを取得可能
-        int avg_time_per_queue = entry.getEvent().getAvgTimePerQueue();
+        Integer avgTimePerQueue = entry.getEvent().getAvgTimePerQueue();
+        int avg_time = (avgTimePerQueue != null) ? avgTimePerQueue : 0;
 
-        // 待機組数から1を引く (ただし0未満にはならないようにする)
-        int displayQueueNumber = Math.max(0, queueNumber - 1);
+        // 待ち時間 = 自分より前の組数 × 各イベント時間
+        int displayWaitTime = (int) (countBeforeMe * avg_time);
 
-        // 待ち時間から自分の分の平均時間を引く
-        int displayWaitTime = Math.max(0, waitTime - avg_time_per_queue);
-
-        ticketDto.setQueueNumber(displayQueueNumber);
+        ticketDto.setQueueNumber((int) countBeforeMe);
         ticketDto.setWaitTime(displayWaitTime);
 
         return ticketDto;
