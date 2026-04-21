@@ -54,9 +54,8 @@ public class EventController {
     @GetMapping("/events/{id}")
     public String eventDetail(@PathVariable("id") Long id,
                               @RequestParam(value = "completed", required = false) Boolean completed,
-                              jakarta.servlet.http.HttpServletRequest request,
+                              Principal principal,
                               Model model) {
-        Principal principal = request.getUserPrincipal();
 
         Event event = eventService.findEventById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
